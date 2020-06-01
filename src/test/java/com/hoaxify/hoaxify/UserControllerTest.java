@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Objects;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -35,19 +37,22 @@ public class UserControllerTest {
     @Test
     public void postUser_whenUserIsValid_receiveOk() {
         User user = createValidUser();
-
         ResponseEntity<Object> response = testRestTemplate.postForEntity(API_1_0_USERS, user, Object.class);
-
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    public void postUser_whenUserIsValid_receiveSuccessMessage() {
+        User user = createValidUser();
+        ResponseEntity<GenericResponse> response = testRestTemplate.postForEntity(API_1_0_USERS, user, GenericResponse.class);
+        assertThat(Objects.requireNonNull(response.getBody()).getMessage()).isEqualTo("User saved");
     }
 
     @Test
     public void postUser_whenUserIsValid_userSavedToDB() {
         User user = createValidUser();
         testRestTemplate.postForEntity(API_1_0_USERS, user, Object.class);
-
         assertThat(userRepository.count()).isEqualTo(1);
-
     }
 
     private User createValidUser() {
