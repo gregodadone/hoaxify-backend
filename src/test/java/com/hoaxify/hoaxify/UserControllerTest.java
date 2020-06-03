@@ -49,6 +49,15 @@ public class UserControllerTest {
     }
 
     @Test
+    public void postUser_whenUserIsValid_passwordIsHashedInDB() {
+        User user = createValidUser();
+        ResponseEntity<GenericResponse> response = testRestTemplate.postForEntity(API_1_0_USERS, user, GenericResponse.class);
+
+        User savedUser = userRepository.findAll().get(0);
+        assertThat(savedUser.getPassword()).isNotEqualTo(user.getPassword());
+    }
+
+    @Test
     public void postUser_whenUserIsValid_userSavedToDB() {
         User user = createValidUser();
         testRestTemplate.postForEntity(API_1_0_USERS, user, Object.class);
