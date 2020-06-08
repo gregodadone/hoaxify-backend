@@ -1,22 +1,19 @@
 package com.hoaxify.hoaxify;
 
 import com.hoaxify.hoaxify.model.User;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class UserControllerTest {
@@ -29,7 +26,7 @@ public class UserControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Before
+    @BeforeEach
     public void clear() {
         userRepository.deleteAll();
     }
@@ -51,7 +48,7 @@ public class UserControllerTest {
     @Test
     public void postUser_whenUserIsValid_passwordIsHashedInDB() {
         User user = createValidUser();
-        ResponseEntity<GenericResponse> response = testRestTemplate.postForEntity(API_1_0_USERS, user, GenericResponse.class);
+        testRestTemplate.postForEntity(API_1_0_USERS, user, GenericResponse.class);
 
         User savedUser = userRepository.findAll().get(0);
         assertThat(savedUser.getPassword()).isNotEqualTo(user.getPassword());
